@@ -12,7 +12,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        if (!RecyclerFragment.isFragment)    // создаем фрагмент если он еще не был создан
+        if (savedInstanceState == null)
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fr, new RecyclerFragment())

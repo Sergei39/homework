@@ -22,11 +22,10 @@ import java.util.ArrayList;
 
 
 public class RecyclerFragment extends Fragment {
-    private static final int START_DATA = 101; // начальное количество элементов в списке
-    public static final String DIGIT_KEY = "data";
+    private static final int START_DATA = 100; // начальное количество элементов в списке
+    private static final String DIGIT_KEY = "data";
 
-    public static boolean isFragment = false;
-    public static int count = START_DATA;
+    private int count = START_DATA;
     private ArrayList<Data> listData = new ArrayList<>();
     private MyAdapter adapter = new MyAdapter(listData);
 
@@ -34,14 +33,10 @@ public class RecyclerFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        isFragment = true;
-
         if(savedInstanceState != null)
             count = savedInstanceState.getInt(DIGIT_KEY);
-        else
-            count = START_DATA;
 
-        for (int i = 1; i < count; i++)
+        for (int i = 1; i <= count; i++)
             listData.add(new Data(Integer.toString(i)));
     }
 
@@ -70,9 +65,9 @@ public class RecyclerFragment extends Fragment {
         butOpen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                count++;
                 listData.add(new Data(Integer.toString(count)));
                 adapter.notifyItemInserted(count - 1);
-                count++;
             }
         });
     }
@@ -80,14 +75,7 @@ public class RecyclerFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(DIGIT_KEY, RecyclerFragment.count);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        isFragment = false;
+        outState.putInt(DIGIT_KEY, count);
     }
 
     class MyAdapter extends RecyclerView.Adapter<MyHolder> {
