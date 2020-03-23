@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,14 +22,21 @@ import java.util.ArrayList;
 
 
 public class RecyclerFragment extends Fragment {
-    public static int count = 0;
+    private static final int START_DATA = 100; // начальное количество элементов в списке
+    private static final String DIGIT_KEY = "data";
+
+    private int count = START_DATA;
     private ArrayList<Data> listData = new ArrayList<>();
     private MyAdapter adapter = new MyAdapter(listData);
 
-    public RecyclerFragment() {
-        super();
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        for (int i = 1; i < count; i++)
+        if(savedInstanceState != null)
+            count = savedInstanceState.getInt(DIGIT_KEY);
+
+        for (int i = 1; i <= count; i++)
             listData.add(new Data(Integer.toString(i)));
     }
 
@@ -57,11 +65,17 @@ public class RecyclerFragment extends Fragment {
         butOpen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listData.add(new Data(Integer.toString(count)));
-                adapter.notifyDataSetChanged();
                 count++;
+                listData.add(new Data(Integer.toString(count)));
+                adapter.notifyItemInserted(count - 1);
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(DIGIT_KEY, count);
     }
 
     class MyAdapter extends RecyclerView.Adapter<MyHolder> {
